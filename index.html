@@ -615,8 +615,20 @@
         let products = JSON.parse(localStorage.getItem('shopee_products')) || defaultProducts;
         let orders = JSON.parse(localStorage.getItem('shopee_orders')) || [];
         let cart = JSON.parse(localStorage.getItem('shopee_cart')) || [];
-        let users = JSON.parse(localStorage.getItem('shopee_users')) || [];
-        let loggedInUser = JSON.parse(localStorage.getItem('shopee_logged_in_user')) || null;
+        
+        let users = [];
+        try {
+            users = JSON.parse(localStorage.getItem('shopee_users')) || [];
+        } catch (e) {
+            users = [];
+        }
+
+        let loggedInUser = null;
+        try {
+            loggedInUser = JSON.parse(localStorage.getItem('shopee_logged_in_user')) || null;
+        } catch (e) {
+            loggedInUser = null;
+        }
 
         // Elements
         const productGridContainer = document.getElementById('productGridContainer');
@@ -834,13 +846,13 @@
         });
         closeCheckoutModal.addEventListener('click', () => checkoutModal.style.display = 'none');
 
-        // Proses Checkout
+        // Proses Checkout & Sinkronisasi Admin
         checkoutForm.addEventListener('submit', function(e) {
             e.preventDefault();
             let totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             const newOrder = {
                 id: 'INV-' + Math.floor(100000 + Math.random() * 900000),
-                user: loggedInUser.username,
+                user: loggedInUser ? loggedInUser.username : 'guest',
                 name: document.getElementById('buyerName').value,
                 phone: document.getElementById('buyerPhone').value,
                 address: document.getElementById('buyerAddress').value,
@@ -860,6 +872,9 @@
             alert(`Checkout Berhasil!\nNo. Pesanan: ${newOrder.id}`);
             checkoutModal.style.display = 'none';
             checkoutForm.reset();
+            
+            // Auto sinkronisasi ke panel admin
+            renderAdminOrders();
         });
 
         // Lacak Pesanan Pelanggan (Sesuai Akun Login)
@@ -989,6 +1004,7 @@
             tabProductBtn.style.background = '#ccc';
             adminOrderSection.style.display = 'block';
             adminProductSection.style.display = 'none';
+            renderAdminOrders(); // Memuat ulang saat tab pesanan diklik
         });
 
         // CRUD Produk oleh Admin
