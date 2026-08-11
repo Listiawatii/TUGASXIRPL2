@@ -347,9 +347,6 @@
             font-weight: bold;
             border-radius: 2px;
         }
-        .qty-btn:hover {
-            background: #eee;
-        }
         .modal-footer {
             display: flex;
             justify-content: space-between;
@@ -387,9 +384,6 @@
             font-size: 14px;
             outline: none;
         }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-            border-color: #ee4d2d;
-        }
         .submit-order-btn {
             width: 100%;
             background: #ee4d2d;
@@ -401,11 +395,8 @@
             cursor: pointer;
             margin-top: 15px;
         }
-        .submit-order-btn:hover {
-            background: #f04925;
-        }
 
-        /* Card Pesanan / Admin Table */
+        /* Card Pesanan / Lacak Pesanan */
         .order-card {
             background: #fafafa;
             border: 1px solid #ddd;
@@ -420,6 +411,14 @@
             border-bottom: 1px solid #eee;
             padding-bottom: 8px;
             margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .status-badge {
+            background: #fff3cd;
+            color: #856404;
+            padding: 3px 8px;
+            border-radius: 2px;
+            font-size: 12px;
             font-weight: bold;
         }
         .status-select {
@@ -444,9 +443,12 @@
             <span>Download</span>
         </div>
         <div class="header-right">
+            <button class="nav-icon-btn" id="openBuyerTrackingBtn" style="background:transparent; border:none; color:white; cursor:pointer; font-size:13px;">
+                <i class="fa-solid fa-box-open"></i> Lacak Pesanan Saya
+            </button>
+            <span>|</span>
             <a href="#"><i class="fa-regular fa-bell"></i> Notifikasi</a>
             <a href="#"><i class="fa-regular fa-circle-question"></i> Bantuan</a>
-            <a href="#"><strong id="currentUserLabel">Mode: Pembeli</strong></a>
         </div>
     </div>
 
@@ -461,9 +463,9 @@
             <button class="search-btn" id="searchBtn"><i class="fa-solid fa-search"></i></button>
         </div>
         
-        <!-- Tombol Ganti Mode (Admin / Pembeli) & Keranjang -->
+        <!-- Tombol Panel Admin & Keranjang -->
         <div class="nav-right-icons">
-            <button class="nav-icon-btn" id="switchRoleBtn"><i class="fa-solid fa-user-shield"></i> <span id="roleText">Buka Panel Admin</span></button>
+            <button class="nav-icon-btn" id="switchRoleBtn"><i class="fa-solid fa-user-shield"></i> <span>Buka Panel Admin</span></button>
             <div class="cart-icon-wrapper" id="cartIcon" title="Lihat Keranjang">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="cart-badge" id="cartBadge">1</span>
@@ -474,7 +476,6 @@
     <!-- Main Content -->
     <div class="main-container">
         <div class="product-content">
-            <!-- Left: Product Image -->
             <div class="product-image-box">
                 <div class="main-img">
                     <i class="fa-brands fa-html5"></i>
@@ -483,7 +484,6 @@
                 </div>
             </div>
 
-            <!-- Right: Product Details -->
             <div class="product-info">
                 <h1><span class="badge-mall">Star+</span> E-Book & Modul Interaktif Pemrograman HTML5 & CSS3 Terlengkap untuk Pemula</h1>
                 
@@ -516,26 +516,9 @@
     <!-- Spesifikasi Produk -->
     <div class="main-container specs-section">
         <h3>SPESIFIKASI PRODUK</h3>
-        <div class="spec-item">
-            <div class="spec-label">Kategori</div>
-            <div class="spec-value">Buku & Modul Digital > Edukasi Teknologi > Pemrograman Komputer</div>
-        </div>
-        <div class="spec-item">
-            <div class="spec-label">Bahasa Pemrograman</div>
-            <div class="spec-value">HTML5 & CSS3</div>
-        </div>
-        <div class="spec-item">
-            <div class="spec-label">Format File</div>
-            <div class="spec-value">PDF & Source Code Project (.zip)</div>
-        </div>
-        <div class="spec-item">
-            <div class="spec-label">Level Belajar</div>
-            <div class="spec-value">Pemula / Dasar (Beginner Friendly)</div>
-        </div>
-        <div class="spec-item">
-            <div class="spec-label">Masa Akses</div>
-            <div class="spec-value">Selamanya (Lifetime Access)</div>
-        </div>
+        <div class="spec-item"><div class="spec-label">Kategori</div><div class="spec-value">Buku & Modul Digital > Edukasi Teknologi</div></div>
+        <div class="spec-item"><div class="spec-label">Bahasa Pemrograman</div><div class="spec-value">HTML5 & CSS3</div></div>
+        <div class="spec-item"><div class="spec-label">Format File</div><div class="spec-value">PDF & Source Code Project (.zip)</div></div>
     </div>
 
     <!-- Modal Popup Isi Keranjang -->
@@ -553,7 +536,7 @@
         </div>
     </div>
 
-    <!-- Modal Form Input Data Diri & Pembayaran (Pembeli) -->
+    <!-- Modal Form Checkout (Pembeli) -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-content">
             <div class="modal-header">
@@ -561,18 +544,9 @@
                 <button class="close-modal" id="closeCheckoutModal">&times;</button>
             </div>
             <form id="checkoutForm">
-                <div class="form-group">
-                    <label>Nama Lengkap</label>
-                    <input type="text" id="buyerName" placeholder="Masukkan nama lengkap" required>
-                </div>
-                <div class="form-group">
-                    <label>Nomor HP / WhatsApp</label>
-                    <input type="tel" id="buyerPhone" placeholder="Contoh: 081234567890" required>
-                </div>
-                <div class="form-group">
-                    <label>Alamat Lengkap Pengiriman</label>
-                    <textarea id="buyerAddress" rows="3" placeholder="Jalan, RT/RW, Kecamatan, Kota" required></textarea>
-                </div>
+                <div class="form-group"><label>Nama Lengkap</label><input type="text" id="buyerName" placeholder="Masukkan nama lengkap" required></div>
+                <div class="form-group"><label>Nomor HP / WhatsApp</label><input type="tel" id="buyerPhone" placeholder="Contoh: 081234567890" required></div>
+                <div class="form-group"><label>Alamat Lengkap Pengiriman</label><textarea id="buyerAddress" rows="3" placeholder="Jalan, RT/RW, Kecamatan, Kota" required></textarea></div>
                 <div class="form-group">
                     <label>Metode Pembayaran</label>
                     <select id="paymentMethod" required>
@@ -590,14 +564,28 @@
         </div>
     </div>
 
-    <!-- Modal Panel Admin (Kelola Status Pesanan) -->
+    <!-- Modal Lacak Pesanan Pembeli -->
+    <div class="modal-overlay" id="buyerTrackingModal">
+        <div class="modal-content" style="width: 700px;">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-box-open"></i> Status & Lacakan Pesanan Pembeli</h3>
+                <button class="close-modal" id="closeBuyerTrackingModal">&times;</button>
+            </div>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Berikut daftar pesanan yang pernah Anda buat. Status akan diperbarui secara otomatis oleh Admin.</p>
+            <div id="buyerOrderList">
+                <p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan aktif. Silakan lakukan checkout produk terlebih dahulu.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Panel Admin -->
     <div class="modal-overlay" id="adminModal">
         <div class="modal-content" style="width: 700px;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-user-shield"></i> Panel Admin - Kelola Pesanan Masuk</h3>
                 <button class="close-modal" id="closeAdminModal">&times;</button>
             </div>
-            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Admin dapat memantau data pembeli dan mengubah status pesanan (Contoh: Menjadi Sedang Dikemas, Dikirim, atau Selesai).</p>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Admin dapat memantau data pembeli dan mengubah status pesanan.</p>
             <div id="adminOrderList">
                 <p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan yang masuk.</p>
             </div>
@@ -617,38 +605,30 @@
         const cartItemsList = document.getElementById('cartItemsList');
         const cartTotalPrice = document.getElementById('cartTotalPrice');
         
-        // Checkout elements
         const openCheckoutForm = document.getElementById('openCheckoutForm');
         const checkoutModal = document.getElementById('checkoutModal');
         const closeCheckoutModal = document.getElementById('closeCheckoutModal');
         const checkoutFinalPrice = document.getElementById('checkoutFinalPrice');
         const checkoutForm = document.getElementById('checkoutForm');
 
+        // Tracking elements (Pembeli)
+        const openBuyerTrackingBtn = document.getElementById('openBuyerTrackingBtn');
+        const buyerTrackingModal = document.getElementById('buyerTrackingModal');
+        const closeBuyerTrackingModal = document.getElementById('closeBuyerTrackingModal');
+        const buyerOrderList = document.getElementById('buyerOrderList');
+
         // Admin elements
         const switchRoleBtn = document.getElementById('switchRoleBtn');
-        const roleText = document.getElementById('roleText');
-        const currentUserLabel = document.getElementById('currentUserLabel');
         const adminModal = document.getElementById('adminModal');
         const closeAdminModal = document.getElementById('closeAdminModal');
         const adminOrderList = document.getElementById('adminOrderList');
 
         let cartQuantity = 1;
         const pricePerItem = 49000;
-
-        // Ambil data pesanan dari localStorage jika ada, agar tersimpan
         let orders = JSON.parse(localStorage.getItem('shopee_orders')) || [];
 
-        function increaseQty() {
-            cartQuantity++;
-            updateCartDisplay();
-        }
-
-        function decreaseQty() {
-            if (cartQuantity > 1) {
-                cartQuantity--;
-                updateCartDisplay();
-            }
-        }
+        function increaseQty() { cartQuantity++; updateCartDisplay(); }
+        function decreaseQty() { if (cartQuantity > 1) { cartQuantity--; updateCartDisplay(); } }
 
         function updateCartDisplay() {
             cartBadge.textContent = cartQuantity;
@@ -659,35 +639,27 @@
                 <div class="cart-item-row">
                     <span>Modul HTML & CSS (x${cartQuantity})</span>
                     <div class="quantity-controls">
-                        <button class="qty-btn" onclick="decreaseQty()">Kurangi</button>
+                        <button class="qty-btn" onclick="decreaseQty()">-</button>
                         <span>${cartQuantity}</span>
-                        <button class="qty-btn" onclick="increaseQty()">Tambah</button>
+                        <button class="qty-btn" onclick="increaseQty()">+</button>
                     </div>
                     <strong>${formattedPrice}</strong>
                 </div>
             `;
-            
             cartTotalPrice.textContent = formattedPrice;
             checkoutFinalPrice.textContent = formattedPrice;
         }
 
         updateCartDisplay();
 
-        // Tombol Tambah ke Keranjang
         btnAddCart.addEventListener('click', function() {
             cartQuantity++;
             updateCartDisplay();
             alert('Berhasil memasukkan Modul HTML & CSS ke keranjang!');
         });
 
-        // Tampilkan Modal Keranjang
-        cartIcon.addEventListener('click', function() {
-            cartModal.style.display = 'flex';
-        });
-
-        closeCartModal.addEventListener('click', function() {
-            cartModal.style.display = 'none';
-        });
+        cartIcon.addEventListener('click', () => cartModal.style.display = 'flex');
+        closeCartModal.addEventListener('click', () => cartModal.style.display = 'none');
 
         openCheckoutForm.addEventListener('click', function() {
             if (cartQuantity > 0) {
@@ -698,47 +670,40 @@
             }
         });
 
-        closeCheckoutModal.addEventListener('click', function() {
-            checkoutModal.style.display = 'none';
-        });
+        closeCheckoutModal.addEventListener('click', () => checkoutModal.style.display = 'none');
+        btnBuyNow.addEventListener('click', () => checkoutModal.style.display = 'flex');
 
-        btnBuyNow.addEventListener('click', function() {
-            checkoutModal.style.display = 'flex';
+        // Tombol Lacak Pesanan (Pembeli)
+        openBuyerTrackingBtn.addEventListener('click', function() {
+            buyerTrackingModal.style.display = 'flex';
+            renderBuyerOrders();
         });
+        closeBuyerTrackingModal.addEventListener('click', () => buyerTrackingModal.style.display = 'none');
 
-        // Tombol Ganti Mode (Admin / Pembeli)
+        // Tombol Panel Admin
         switchRoleBtn.addEventListener('click', function() {
             adminModal.style.display = 'flex';
             renderAdminOrders();
         });
+        closeAdminModal.addEventListener('click', () => adminModal.style.display = 'none');
 
-        closeAdminModal.addEventListener('click', function() {
-            adminModal.style.display = 'none';
-        });
-
-        // Menutup modal jika klik di luar kotak
         window.addEventListener('click', function(event) {
             if (event.target === cartModal) cartModal.style.display = 'none';
             if (event.target === checkoutModal) checkoutModal.style.display = 'none';
+            if (event.target === buyerTrackingModal) buyerTrackingModal.style.display = 'none';
             if (event.target === adminModal) adminModal.style.display = 'none';
         });
 
-        // Submit Form Checkout oleh Pembeli
+        // Submit Checkout
         checkoutForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            const name = document.getElementById('buyerName').value;
-            const phone = document.getElementById('buyerPhone').value;
-            const address = document.getElementById('buyerAddress').value;
-            const payment = document.getElementById('paymentMethod').value;
-            const total = checkoutFinalPrice.textContent;
-            
             const newOrder = {
                 id: 'INV-' + Math.floor(100000 + Math.random() * 900000),
-                name: name,
-                phone: phone,
-                address: address,
-                payment: payment,
-                total: total,
+                name: document.getElementById('buyerName').value,
+                phone: document.getElementById('buyerPhone').value,
+                address: document.getElementById('buyerAddress').value,
+                payment: document.getElementById('paymentMethod').value,
+                total: checkoutFinalPrice.textContent,
                 qty: cartQuantity,
                 status: 'Menunggu Konfirmasi'
             };
@@ -746,7 +711,7 @@
             orders.unshift(newOrder);
             localStorage.setItem('shopee_orders', JSON.stringify(orders));
 
-            alert(`Checkout Berhasil!\nNo. Pesanan: ${newOrder.id}\nSilakan cek Panel Admin untuk memproses data pesanan ini.`);
+            alert(`Checkout Berhasil!\nNo. Pesanan: ${newOrder.id}\nAnda bisa melacak status pesanan melalui menu "Lacak Pesanan Saya" di atas.`);
             
             cartQuantity = 0;
             updateCartDisplay();
@@ -754,21 +719,48 @@
             checkoutForm.reset();
         });
 
-        // Render Data untuk Panel Admin (Admin bisa mengubah status)
+        // Render Lacak Pesanan untuk Pembeli
+        function renderBuyerOrders() {
+            let currentOrders = JSON.parse(localStorage.getItem('shopee_orders')) || [];
+            if (currentOrders.length === 0) {
+                buyerOrderList.innerHTML = `<p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan aktif. Silakan lakukan checkout produk terlebih dahulu.</p>`;
+                return;
+            }
+
+            let html = '';
+            currentOrders.forEach(order => {
+                html += `
+                    <div class="order-card">
+                        <div class="order-header-row">
+                            <span>ID Pesanan: ${order.id}</span>
+                            <span class="status-badge"><i class="fa-solid fa-truck-fast"></i> ${order.status}</span>
+                        </div>
+                        <p><strong>Penerima:</strong> ${order.name} (${order.phone})</p>
+                        <p><strong>Alamat:</strong> ${order.address}</p>
+                        <p><strong>Pembayaran:</strong> ${order.payment}</p>
+                        <p><strong>Produk:</strong> Modul HTML & CSS (x${order.qty}) - <strong>${order.total}</strong></p>
+                    </div>
+                `;
+            });
+            buyerOrderList.innerHTML = html;
+        }
+
+        // Render Panel Admin
         function renderAdminOrders() {
-            if (orders.length === 0) {
+            let currentOrders = JSON.parse(localStorage.getItem('shopee_orders')) || [];
+            if (currentOrders.length === 0) {
                 adminOrderList.innerHTML = `<p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan yang masuk dari pembeli.</p>`;
                 return;
             }
 
             let html = '';
-            orders.forEach((order, index) => {
+            currentOrders.forEach((order, index) => {
                 html += `
                     <div class="order-card">
                         <div class="order-header-row">
                             <span>ID: ${order.id}</span>
                             <div>
-                                <label style="font-weight:normal; font-size:12px;">Status:</label>
+                                <label style="font-weight:normal; font-size:12px;">Ubah Status:</label>
                                 <select class="status-select" onchange="updateOrderStatus(${index}, this.value)">
                                     <option value="Menunggu Konfirmasi" ${order.status === 'Menunggu Konfirmasi' ? 'selected' : ''}>Menunggu Konfirmasi</option>
                                     <option value="Sedang Dikemas" ${order.status === 'Sedang Dikemas' ? 'selected' : ''}>Sedang Dikemas</option>
@@ -787,16 +779,14 @@
             adminOrderList.innerHTML = html;
         }
 
-        // Fungsi yang dipanggil saat admin mengubah status pesanan melalui dropdown
         window.updateOrderStatus = function(index, newStatus) {
-            orders[index].status = newStatus;
-            localStorage.setItem('shopee_orders', JSON.stringify(orders));
-            alert('Status pesanan ' + orders[index].id + ' berhasil diubah menjadi: ' + newStatus);
+            let currentOrders = JSON.parse(localStorage.getItem('shopee_orders')) || [];
+            currentOrders[index].status = newStatus;
+            localStorage.setItem('shopee_orders', JSON.stringify(currentOrders));
+            alert('Status pesanan ' + currentOrders[index].id + ' berhasil diubah menjadi: ' + newStatus);
         }
 
-        searchBtn.addEventListener('click', function() {
-            alert('Mencari produk dengan kata kunci: "' + searchInput.value + '"');
-        });
+        searchBtn.addEventListener('click', () => alert('Mencari produk: "' + searchInput.value + '"'));
     </script>
 </body>
 </html>
