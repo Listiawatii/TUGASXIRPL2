@@ -82,9 +82,14 @@
         .search-btn:hover {
             background: #f04925;
         }
-        .cart-icon {
+        .nav-right-icons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .cart-icon, .status-icon {
             color: #fff;
-            font-size: 24px;
+            font-size: 22px;
             position: relative;
             cursor: pointer;
         }
@@ -279,7 +284,7 @@
         }
         .modal-content {
             background: #fff;
-            width: 500px;
+            width: 550px;
             max-width: 90%;
             max-height: 90vh;
             overflow-y: auto;
@@ -299,7 +304,7 @@
             color: #ee4d2d;
             font-size: 18px;
         }
-        .close-modal, .close-checkout-modal {
+        .close-modal, .close-checkout-modal, .close-status-modal {
             background: none;
             border: none;
             font-size: 20px;
@@ -384,6 +389,32 @@
         .submit-order-btn:hover {
             background: #f04925;
         }
+
+        /* Status Pesanan Card */
+        .order-card {
+            background: #fafafa;
+            border: 1px solid #eee;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            font-size: 13px;
+        }
+        .order-header-row {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            font-weight: bold;
+        }
+        .status-badge {
+            background: #fff3cd;
+            color: #856404;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 11px;
+            border: 1px solid #ffeeba;
+        }
     </style>
 </head>
 <body>
@@ -414,10 +445,16 @@
             <input type="text" id="searchInput" value="Modul Panduan HTML & CSS Lengkap Pemula" placeholder="Cari produk, brand, atau kategori...">
             <button class="search-btn" id="searchBtn"><i class="fa-solid fa-search"></i></button>
         </div>
-        <!-- Tombol Ikon Keranjang -->
-        <div class="cart-icon" id="cartIcon" title="Klik untuk lihat isi keranjang">
-            <i class="fa-solid fa-cart-shopping"></i>
-            <span class="cart-badge" id="cartBadge">1</span>
+        
+        <!-- Kumpulan Ikon Kanan (Keranjang & Status Pesanan) -->
+        <div class="nav-right-icons">
+            <div class="status-icon" id="statusIcon" title="Cek Status Pesanan">
+                <i class="fa-solid fa-clipboard-list" style="font-size: 22px;"></i>
+            </div>
+            <div class="cart-icon" id="cartIcon" title="Klik untuk lihat isi keranjang">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span class="cart-badge" id="cartBadge">1</span>
+            </div>
         </div>
     </div>
 
@@ -495,9 +532,7 @@
                 <h3><i class="fa-solid fa-cart-shopping"></i> Keranjang Belanja Anda</h3>
                 <button class="close-modal" id="closeModal">&times;</button>
             </div>
-            <div id="cartItemsList">
-                <!-- Isi keranjang akan di-generate otomatis oleh JavaScript -->
-            </div>
+            <div id="cartItemsList"></div>
             <div class="modal-footer">
                 <span>Total: <strong id="cartTotalPrice" style="color: #ee4d2d; font-size: 16px;">Rp49.000</strong></span>
                 <button class="checkout-modal-btn" id="openCheckoutForm">Checkout</button>
@@ -542,6 +577,19 @@
         </div>
     </div>
 
+    <!-- Modal Status Pesanan -->
+    <div class="modal-overlay" id="statusModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-clipboard-list"></i> Status Pesanan Saya</h3>
+                <button class="close-status-modal" id="closeStatusModal">&times;</button>
+            </div>
+            <div id="orderHistoryList">
+                <p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan yang dibuat.</p>
+            </div>
+        </div>
+    </div>
+
     <!-- JavaScript Interaksi -->
     <script>
         const btnAddCart = document.getElementById('btnAddCart');
@@ -562,8 +610,15 @@
         const checkoutFinalPrice = document.getElementById('checkoutFinalPrice');
         const checkoutForm = document.getElementById('checkoutForm');
 
+        // Elemen Status Pesanan
+        const statusIcon = document.getElementById('statusIcon');
+        const statusModal = document.getElementById('statusModal');
+        const closeStatusModal = document.getElementById('closeStatusModal');
+        const orderHistoryList = document.getElementById('orderHistoryList');
+
         let cartQuantity = 1;
         const pricePerItem = 49000;
+        let orders = []; // Array untuk menyimpan riwayat pesanan
 
         function increaseQty() {
             cartQuantity++;
@@ -584,7 +639,7 @@
             
             cartItemsList.innerHTML = `
                 <div class="cart-item-row">
-                    <span>Modul HTML & CSS</span>
+                    <span>Modul HTML & CSS (x${cartQuantity})</span>
                     <div class="quantity-controls">
                         <button class="qty-btn" onclick="decreaseQty()">Kurangi</button>
                         <span>${cartQuantity}</span>
@@ -614,7 +669,6 @@
             cartModal.style.display = 'none';
         });
 
-        // Buka form checkout dari modal keranjang
         openCheckoutForm.addEventListener('click', function() {
             if (cartQuantity > 0) {
                 cartModal.style.display = 'none';
@@ -624,40 +678,88 @@
             }
         });
 
-        // Tombol close form checkout
         closeCheckoutModal.addEventListener('click', function() {
             checkoutModal.style.display = 'none';
         });
 
-        // Tombol Beli Sekarang langsung ke form checkout
         btnBuyNow.addEventListener('click', function() {
             checkoutModal.style.display = 'flex';
         });
 
+        // Buka Modal Status Pesanan via Ikon Clipboard di Navbar
+        statusIcon.addEventListener('click', function() {
+            statusModal.style.display = 'flex';
+            renderOrderHistory();
+        });
+
+        closeStatusModal.addEventListener('click', function() {
+            statusModal.style.display = 'none';
+        });
+
         // Menutup modal jika klik di luar kotak
         window.addEventListener('click', function(event) {
-            if (event.target === cartModal) {
-                cartModal.style.display = 'none';
-            }
-            if (event.target === checkoutModal) {
-                checkoutModal.style.display = 'none';
-            }
+            if (event.target === cartModal) cartModal.style.display = 'none';
+            if (event.target === checkoutModal) checkoutModal.style.display = 'none';
+            if (event.target === statusModal) statusModal.style.display = 'none';
         });
 
         // Aksi ketika form checkout disubmit
         checkoutForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const name = document.getElementById('buyerName').value;
+            const phone = document.getElementById('buyerPhone').value;
+            const address = document.getElementById('buyerAddress').value;
             const payment = document.getElementById('paymentMethod').value;
+            const total = checkoutFinalPrice.textContent;
             
-            alert(`Terima kasih ${name}! Pesanan Anda berhasil dibuat.\nTotal: ${checkoutFinalPrice.textContent}\nMetode Pembayaran: ${payment}`);
+            // Buat objek data pesanan baru
+            const newOrder = {
+                id: 'INV-' + Math.floor(100000 + Math.random() * 900000),
+                name: name,
+                phone: phone,
+                address: address,
+                payment: payment,
+                total: total,
+                qty: cartQuantity,
+                status: 'Sedang Dikemas (Menunggu Konfirmasi Penjual)'
+            };
+
+            // Masukkan ke dalam array riwayat pesanan
+            orders.unshift(newOrder);
+
+            alert(`Pesanan Berhasil Dibuat!\nNo. Pesanan: ${newOrder.id}\nStatus: ${newOrder.status}`);
             
-            // Reset keranjang & tutup modal
+            // Reset keranjang & tutup form
             cartQuantity = 0;
             updateCartDisplay();
             checkoutModal.style.display = 'none';
             checkoutForm.reset();
         });
+
+        // Fungsi menampilkan daftar pesanan di modal status
+        function renderOrderHistory() {
+            if (orders.length === 0) {
+                orderHistoryList.innerHTML = `<p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan yang dibuat.</p>`;
+                return;
+            }
+
+            let html = '';
+            orders.forEach(order => {
+                html += `
+                    <div class="order-card">
+                        <div class="order-header-row">
+                            <span>No: ${order.id}</span>
+                            <span class="status-badge">${order.status}</span>
+                        </div>
+                        <p><strong>Nama:</strong> ${order.name} (${order.phone})</p>
+                        <p><strong>Alamat:</strong> ${order.address}</p>
+                        <p><strong>Metode Bayar:</strong> ${order.payment}</p>
+                        <p><strong>Jumlah:</strong> ${order.qty} Item (${order.total})</p>
+                    </div>
+                `;
+            });
+            orderHistoryList.innerHTML = html;
+        }
 
         searchBtn.addEventListener('click', function() {
             alert('Mencari produk dengan kata kunci: "' + searchInput.value + '"');
