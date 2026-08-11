@@ -290,12 +290,12 @@
             <span>shopee</span>
         </a>
         <div class="search-container">
-            <input type="text" value="Modul Panduan HTML & CSS Lengkap Pemula" placeholder="Cari produk, brand, atau kategori...">
-            <button class="search-btn"><i class="fa-solid fa-search"></i></button>
+            <input type="text" id="searchInput" value="Modul Panduan HTML & CSS Lengkap Pemula" placeholder="Cari produk, brand, atau kategori...">
+            <button class="search-btn" id="searchBtn"><i class="fa-solid fa-search"></i></button>
         </div>
-        <div class="cart-icon">
+        <div class="cart-icon" id="cartIcon">
             <i class="fa-solid fa-cart-shopping"></i>
-            <span class="cart-badge">3</span>
+            <span class="cart-badge" id="cartBadge">3</span>
         </div>
     </div>
 
@@ -332,10 +332,10 @@
                 </div>
 
                 <div class="action-buttons">
-                    <button class="btn btn-cart">
+                    <button class="btn btn-cart" id="btnAddCart">
                         <i class="fa-solid fa-cart-plus"></i> masukkan keranjang
                     </button>
-                    <button class="btn btn-buy">beli sekarang</button>
+                    <button class="btn btn-buy" id="btnBuyNow">beli sekarang</button>
                 </div>
             </div>
         </div>
@@ -366,5 +366,39 @@
         </div>
     </div>
 
+    <!-- JavaScript Interaksi Tombol -->
+    <script>
+        // Ambil elemen berdasarkan ID
+        const btnAddCart = document.getElementById('btnAddCart');
+        const btnBuyNow = document.getElementById('btnBuyNow');
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        const cartBadge = document.getElementById('cartBadge');
+        const cartIcon = document.getElementById('cartIcon');
+
+        let cartCount = 3;
+
+        // Aksi saat tombol "Masukkan Keranjang" diklik
+        btnAddCart.addEventListener('click', function() {
+            cartCount++;
+            cartBadge.textContent = cartCount;
+            alert('Berhasil memasukkan Modul HTML & CSS ke keranjang!');
+        });
+
+        // Aksi saat tombol "Beli Sekarang" diklik
+        btnBuyNow.addEventListener('click', function() {
+            alert('Menuju halaman *Checkout* Modul HTML & CSS...');
+        });
+
+        // Aksi saat tombol cari diklik
+        searchBtn.addEventListener('click', function() {
+            alert('Mencari produk dengan kata kunci: "' + searchInput.value + '"');
+        });
+
+        // Aksi saat ikon keranjang diklik
+        cartIcon.addEventListener('click', function() {
+            alert('Anda memiliki ' + cartCount + ' item di dalam keranjang.');
+        });
+    </script>
 </body>
 </html>
