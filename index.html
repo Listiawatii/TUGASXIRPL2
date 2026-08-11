@@ -441,11 +441,7 @@
                 <button class="close-modal" id="closeModal">&times;</button>
             </div>
             <div id="cartItemsList">
-                <!-- Isi keranjang akan muncul di sini secara otomatis -->
-                <div class="cart-item-row">
-                    <span>Modul HTML & CSS (x1)</span>
-                    <strong>Rp49.000</strong>
-                </div>
+                <!-- Isi keranjang akan di-generate otomatis oleh JavaScript -->
             </div>
             <div class="modal-footer">
                 <span>Total: <strong id="cartTotalPrice" style="color: #ee4d2d; font-size: 16px;">Rp49.000</strong></span>
@@ -454,7 +450,7 @@
         </div>
     </div>
 
-    <!-- JavaScript Interaksi & Isi Keranjang -->
+    <!-- JavaScript Interaksi & Kalkulasi Total Keranjang Otomatis -->
     <script>
         const btnAddCart = document.getElementById('btnAddCart');
         const btnBuyNow = document.getElementById('btnBuyNow');
@@ -464,17 +460,45 @@
         const cartIcon = document.getElementById('cartIcon');
         const cartModal = document.getElementById('cartModal');
         const closeModal = document.getElementById('closeModal');
+        const cartItemsList = document.getElementById('cartItemsList');
+        const cartTotalPrice = document.getElementById('cartTotalPrice');
 
-        let cartCount = 1;
+        // Data awal keranjang
+        let cartQuantity = 1;
+        const pricePerItem = 49000;
+
+        // Fungsi untuk memperbarui tampilan isi keranjang dan total harga
+        function updateCartDisplay() {
+            cartBadge.textContent = cartQuantity;
+            
+            // Hitung total harga otomatis
+            let totalPrice = cartQuantity * pricePerItem;
+            
+            // Format angka ke format Rupiah (contoh: Rp49.000)
+            let formattedPrice = "Rp" + totalPrice.toLocaleString('id-ID');
+            
+            // Perbarui HTML di dalam modal keranjang
+            cartItemsList.innerHTML = `
+                <div class="cart-item-row">
+                    <span>Modul HTML & CSS (x${cartQuantity})</span>
+                    <strong>${formattedPrice}</strong>
+                </div>
+            `;
+            
+            cartTotalPrice.textContent = formattedPrice;
+        }
+
+        // Panggil fungsi saat halaman pertama kali dimuat
+        updateCartDisplay();
 
         // Saat tombol "Masukkan Keranjang" diklik
         btnAddCart.addEventListener('click', function() {
-            cartCount++;
-            cartBadge.textContent = cartCount;
+            cartQuantity++;
+            updateCartDisplay();
             alert('Berhasil memasukkan Modul HTML & CSS ke keranjang!');
         });
 
-        // Saat ikon keranjang diklik, buka jendela modal isi keranjang
+        // Saat ikon keranjang diklik, buka jendela modal
         cartIcon.addEventListener('click', function() {
             cartModal.style.display = 'flex';
         });
