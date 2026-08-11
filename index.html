@@ -308,9 +308,25 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 0;
+            padding: 12px 0;
             border-bottom: 1px solid #f9f9f9;
             font-size: 14px;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .qty-btn {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 2px 8px;
+            cursor: pointer;
+            font-weight: bold;
+            border-radius: 2px;
+        }
+        .qty-btn:hover {
+            background: #eee;
         }
         .modal-footer {
             display: flex;
@@ -467,6 +483,20 @@
         let cartQuantity = 1;
         const pricePerItem = 49000;
 
+        // Fungsi untuk menambah jumlah item
+        function increaseQty() {
+            cartQuantity++;
+            updateCartDisplay();
+        }
+
+        // Fungsi untuk mengurangi jumlah item (minimal 1)
+        function decreaseQty() {
+            if (cartQuantity > 1) {
+                cartQuantity--;
+                updateCartDisplay();
+            }
+        }
+
         // Fungsi untuk memperbarui tampilan isi keranjang dan total harga
         function updateCartDisplay() {
             cartBadge.textContent = cartQuantity;
@@ -477,10 +507,15 @@
             // Format angka ke format Rupiah (contoh: Rp49.000)
             let formattedPrice = "Rp" + totalPrice.toLocaleString('id-ID');
             
-            // Perbarui HTML di dalam modal keranjang
+            // Perbarui HTML di dalam modal keranjang dengan tombol tambah dan kurangi
             cartItemsList.innerHTML = `
                 <div class="cart-item-row">
-                    <span>Modul HTML & CSS (x${cartQuantity})</span>
+                    <span>Modul HTML & CSS</span>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" onclick="decreaseQty()">Kurangi</button>
+                        <span>${cartQuantity}</span>
+                        <button class="qty-btn" onclick="increaseQty()">Tambah</button>
+                    </div>
                     <strong>${formattedPrice}</strong>
                 </div>
             `;
