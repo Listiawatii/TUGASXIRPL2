@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modul Belajar HTML & CSS - Shopee Style</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        /* Top Header Shopee */
+        .shopee-header {
+            background: linear-gradient(-180deg,#f53d2d,#f63);
+            color: #fff;
+            padding: 10px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+        }
+        .header-left, .header-right {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .header-left a, .header-right a {
+            color: #fff;
+            text-decoration: none;
+        }
+        
+        /* Main Navigation Bar */
+        .navbar {
+            background: linear-gradient(-180deg,#f53d2d,#f63);
+            padding: 15px 50px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #fff;
+            font-size: 26px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+        .logo-area span {
+            font-size: 24px;
+        }
+        .search-container {
+            display: flex;
+            background: #fff;
+            flex: 0.6;
+            padding: 3px;
+            border-radius: 2px;
+            box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.09);
+        }
+        .search-container input {
+            flex: 1;
+            border: none;
+            padding: 8px 12px;
+            outline: none;
+            font-size: 14px;
+        }
+        .search-btn {
+            background: #fb5533;
+            border: none;
+            color: #fff;
+            padding: 0 20px;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .search-btn:hover {
+            background: #f04925;
+        }
+        .cart-icon {
+            color: #fff;
+            font-size: 24px;
+            position: relative;
+            cursor: pointer;
+        }
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -10px;
+            background: #fff;
+            color: #ee4d2d;
+            font-size: 11px;
+            padding: 1px 5px;
+            border-radius: 10px;
+            font-weight: bold;
+            border: 2px solid #ee4d2d;
+        }
+
+        /* Container Product Detail */
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
+        }
+        .product-content {
+            display: grid;
+            grid-template-columns: 4fr 6fr;
+            gap: 30px;
+        }
+        .product-image-box {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .main-img {
+            width: 100%;
+            height: 380px;
+            background: linear-gradient(135deg, #e44d26, #f16529);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            border-radius: 2px;
+            text-align: center;
+            padding: 20px;
+        }
+        .main-img i {
+            font-size: 80px;
+            margin-bottom: 10px;
+        }
+        .main-img h2 {
+            font-size: 28px;
+            letter-spacing: 2px;
+        }
+
+        /* Product Details Info */
+        .product-info h1 {
+            font-size: 20px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+        .badge-mall {
+            background: #ee4d2d;
+            color: white;
+            font-size: 10px;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        .rating-sold-row {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            margin: 15px 0;
+            border-bottom: 1px solid #f2f2f2;
+            padding-bottom: 15px;
+        }
+        .rating-sold-row span {
+            color: #757575;
+        }
+        .rating-sold-row strong {
+            color: #222;
+            border-bottom: 1px solid #222;
+        }
+        .price-box {
+            background: #fafafa;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            border-radius: 2px;
+        }
+        .original-price {
+            font-size: 16px;
+            color: #929292;
+            text-decoration: line-through;
+        }
+        .current-price {
+            font-size: 30px;
+            color: #ee4d2d;
+            font-weight: 500;
+        }
+        .discount-tag {
+            background: #ee4d2d;
+            color: #fff;
+            font-size: 10px;
+            font-weight: bold;
+            padding: 2px 4px;
+            border-radius: 2px;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        .btn {
+            padding: 12px 25px;
+            font-size: 15px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: opacity 0.2s;
+        }
+        .btn-cart {
+            background: rgba(255,87,34,0.1);
+            color: #ee4d2d;
+            border: 1px solid #ee4d2d;
+        }
+        .btn-cart:hover {
+            background: rgba(255,87,34,0.2);
+        }
+        .btn-buy {
+            background: #ee4d2d;
+            color: white;
+            border: none;
+        }
+        .btn-buy:hover {
+            background: #f04925;
+        }
+
+        /* Specification Section */
+        .specs-section {
+            margin-top: 30px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 3px;
+            box-shadow: 0 1px 1px 0 rgba(0,0,0,.05);
+        }
+        .specs-section h3 {
+            font-size: 18px;
+            background: #fafafa;
+            padding: 10px 15px;
+            margin-bottom: 15px;
+            color: #333;
+            border-left: 4px solid #ee4d2d;
+        }
+        .spec-item {
+            display: flex;
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+        .spec-label {
+            width: 150px;
+            color: rgba(0,0,0,.54);
+        }
+        .spec-value {
+            color: rgba(0,0,0,.8);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Top Header -->
+    <div class="shopee-header">
+        <div class="header-left">
+            <span>Seller Centre</span>
+            <span>|</span>
+            <span>Mulai Jualan</span>
+            <span>|</span>
+            <span>Download</span>
+        </div>
+        <div class="header-right">
+            <a href="#"><i class="fa-regular fa-bell"></i> Notifikasi</a>
+            <a href="#"><i class="fa-regular fa-circle-question"></i> Bantuan</a>
+            <a href="#"><strong>Listiawati</strong></a>
+        </div>
+    </div>
+
+    <!-- Navbar & Search -->
+    <div class="navbar">
+        <a href="#" class="logo-area">
+            <i class="fa-solid fa-bag-shopping"></i>
+            <span>shopee</span>
+        </a>
+        <div class="search-container">
+            <input type="text" value="Modul Panduan HTML & CSS Lengkap Pemula" placeholder="Cari produk, brand, atau kategori...">
+            <button class="search-btn"><i class="fa-solid fa-search"></i></button>
+        </div>
+        <div class="cart-icon">
+            <i class="fa-solid fa-cart-shopping"></i>
+            <span class="cart-badge">3</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <div class="product-content">
+            <!-- Left: Product Image -->
+            <div class="product-image-box">
+                <div class="main-img">
+                    <i class="fa-brands fa-html5"></i>
+                    <h2>HTML & CSS</h2>
+                    <p style="font-size: 13px; margin-top: 5px;">Masterclass Web Development</p>
+                </div>
+            </div>
+
+            <!-- Right: Product Details -->
+            <div class="product-info">
+                <h1><span class="badge-mall">Star+</span> E-Book & Modul Interaktif Pemrograman HTML5 & CSS3 Terlengkap untuk Pemula</h1>
+                
+                <div class="rating-sold-row">
+                    <div><strong>4.9</strong> <i class="fa-solid fa-star" style="color: #ffce3d; font-size: 12px;"></i></div>
+                    <div><span>Terjual</span> <strong>1.4RB</strong></div>
+                    <div><span>Penilaian</span> <strong>520</strong></div>
+                </div>
+
+                <div class="price-box">
+                    <span class="original-price">Rp150.000</span>
+                    <span class="current-price">Rp49.000</span>
+                    <span class="discount-tag">67% OFF</span>
+                </div>
+
+                <div style="font-size: 14px; color: #555; line-height: 1.6; margin-bottom: 20px;">
+                    <p>Pelajari fondasi pembuatan website dari dasar hingga mahir. Mencakup struktur tag HTML5, semantik web, styling modern menggunakan CSS3 Flexbox/Grid, hingga teknik responsive design untuk berbagai perangkat.</p>
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-cart">
+                        <i class="fa-solid fa-cart-plus"></i> masukkan keranjang
+                    </button>
+                    <button class="btn btn-buy">beli sekarang</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Spesifikasi Produk -->
+    <div class="main-container specs-section">
+        <h3>SPESIFIKASI PRODUK</h3>
+        <div class="spec-item">
+            <div class="spec-label">Kategori</div>
+            <div class="spec-value">Buku & Modul Digital > Edukasi Teknologi > Pemrograman Komputer</div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-label">Bahasa Pemrograman</div>
+            <div class="spec-value">HTML5 & CSS3</div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-label">Format File</div>
+            <div class="spec-value">PDF & Source Code Project (.zip)</div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-label">Level Belajar</div>
+            <div class="spec-value">Pemula / Dasar (Beginner Friendly)</div>
+        </div>
+        <div class="spec-item">
+            <div class="spec-label">Masa Akses</div>
+            <div class="spec-value">Selamanya (Lifetime Access)</div>
+        </div>
+    </div>
+
+</body>
+</html>
