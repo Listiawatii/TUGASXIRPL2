@@ -263,7 +263,7 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 20px;
-            border-top: 1px solid #1;
+            border-top: 1px solid #eee;
             padding-top: 15px;
         }
         .checkout-modal-btn {
@@ -639,6 +639,9 @@
                 document.getElementById('logoutUserBtn').addEventListener('click', () => {
                     localStorage.removeItem('shopee_logged_in_user');
                     loggedInUser = null;
+                    cart = [];
+                    localStorage.removeItem('shopee_cart');
+                    updateCartBadgeCount();
                     updateAuthUI();
                     alert('Berhasil Logout.');
                 });
@@ -678,8 +681,14 @@
             updateCartBadgeCount();
         }
 
-        // Tambah ke Keranjang
+        // Tambah ke Keranjang (Wajib Login Pelanggan)
         window.addToCart = function(productId) {
+            if (!loggedInUser) {
+                alert('Silakan login atau registrasi sebagai pelanggan terlebih dahulu untuk menambahkan produk ke keranjang!');
+                userLoginModal.style.display = 'flex';
+                return;
+            }
+
             let prod = products.find(p => p.id === productId);
             if (!prod) return;
 
@@ -740,19 +749,21 @@
             updateCartBadgeCount();
         };
 
-        cartIcon.addEventListener('click', () => { renderCartModal(); cartModal.style.display = 'flex'; });
+        cartIcon.addEventListener('click', () => {
+            if (!loggedInUser) {
+                alert('Silakan login terlebih dahulu untuk melihat keranjang belanja Anda.');
+                userLoginModal.style.display = 'flex';
+                return;
+            }
+            renderCartModal();
+            cartModal.style.display = 'flex';
+        });
         closeCartModal.addEventListener('click', () => cartModal.style.display = 'none');
 
-        // Validasi Checkout (Harus Login Pelanggan Terlebih Dahulu)
+        // Validasi Checkout
         openCheckoutForm.addEventListener('click', () => {
             if (cart.length === 0) {
                 alert('Keranjang belanja kosong!');
-                return;
-            }
-            if (!loggedInUser) {
-                cartModal.style.display = 'none';
-                alert('Silakan registrasi atau login sebagai pelanggan terlebih dahulu untuk melanjutkan checkout.');
-                userLoginModal.style.display = 'flex';
                 return;
             }
             cartModal.style.display = 'none';
