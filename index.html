@@ -31,9 +31,12 @@
             gap: 15px;
             align-items: center;
         }
-        .header-left a, .header-right a {
+        .header-left span, .header-right span, .header-right button {
             color: #fff;
-            text-decoration: none;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
         }
         
         /* Main Navigation Bar */
@@ -84,7 +87,7 @@
         }
         .nav-right-icons {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             align-items: center;
         }
         .nav-icon-btn {
@@ -121,7 +124,7 @@
             border: 2px solid #ee4d2d;
         }
 
-        /* Container Product List / Detail */
+        /* Container Product List */
         .main-container {
             max-width: 1200px;
             margin: 20px auto;
@@ -207,7 +210,7 @@
         }
         .modal-content {
             background: #fff;
-            width: 650px;
+            width: 450px;
             max-width: 90%;
             max-height: 90vh;
             overflow-y: auto;
@@ -260,7 +263,7 @@
             justify-content: space-between;
             align-items: center;
             margin-top: 20px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid #1;
             padding-top: 15px;
         }
         .checkout-modal-btn {
@@ -309,6 +312,17 @@
         .admin-action-btn:hover {
             background: #208d7f;
         }
+        .switch-auth {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 13px;
+        }
+        .switch-auth a {
+            color: #ee4d2d;
+            text-decoration: none;
+            font-weight: bold;
+            cursor: pointer;
+        }
 
         /* Card Pesanan / Produk Admin */
         .order-card {
@@ -349,7 +363,7 @@
             margin-top: 10px;
         }
         .btn-edit { background: #ffc107; color: #333; border: none; padding: 5px 10px; border-radius: 2px; cursor: pointer; font-weight: bold; font-size: 12px; }
-        .btn-delete { background: #dc3545; color: #white; border: none; padding: 5px 10px; border-radius: 2px; cursor: pointer; font-weight: bold; font-size: 12px; color: #fff;}
+        .btn-delete { background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 2px; cursor: pointer; font-weight: bold; font-size: 12px; }
     </style>
 </head>
 <body>
@@ -360,16 +374,9 @@
             <span>Seller Centre</span>
             <span>|</span>
             <span>Mulai Jualan</span>
-            <span>|</span>
-            <span>Download</span>
         </div>
-        <div class="header-right">
-            <button class="nav-icon-btn" id="openBuyerTrackingBtn" style="background:transparent; border:none; color:white; cursor:pointer; font-size:13px;">
-                <i class="fa-solid fa-box-open"></i> Lacak Pesanan Saya
-            </button>
-            <span>|</span>
-            <a href="#"><i class="fa-regular fa-bell"></i> Notifikasi</a>
-            <a href="#"><i class="fa-regular fa-circle-question"></i> Bantuan</a>
+        <div class="header-right" id="topHeaderRight">
+            <button id="openUserAuthBtn">Daftar / Login Pelanggan</button>
         </div>
     </div>
 
@@ -385,7 +392,7 @@
         </div>
         
         <div class="nav-right-icons">
-            <button class="nav-icon-btn" id="switchRoleBtn"><i class="fa-solid fa-user-shield"></i> <span>Panel Admin Toko</span></button>
+            <button class="nav-icon-btn" id="openAdminLoginBtn"><i class="fa-solid fa-user-shield"></i> <span>Login Admin</span></button>
             <div class="cart-icon-wrapper" id="cartIcon" title="Lihat Keranjang">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="cart-badge" id="cartBadge">0</span>
@@ -401,9 +408,61 @@
         </div>
     </div>
 
+    <!-- Modal Registrasi Pelanggan -->
+    <div class="modal-overlay" id="registerModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-plus"></i> Daftar Akun Pelanggan</h3>
+                <button class="close-modal" id="closeRegisterModal">&times;</button>
+            </div>
+            <form id="registerForm">
+                <div class="form-group"><label>Nama Lengkap</label><input type="text" id="regName" placeholder="Nama Anda" required></div>
+                <div class="form-group"><label>Email / Username</label><input type="text" id="regUser" placeholder="Email atau username" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="regPass" placeholder="Buat password" required></div>
+                <button type="submit" class="submit-order-btn">Daftar Sekarang</button>
+            </form>
+            <div class="switch-auth">
+                Sudah punya akun? <a id="switchToLogin">Login di sini</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Login Pelanggan -->
+    <div class="modal-overlay" id="userLoginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-right-to-bracket"></i> Login Pelanggan</h3>
+                <button class="close-modal" id="closeUserLoginModal">&times;</button>
+            </div>
+            <form id="userLoginForm">
+                <div class="form-group"><label>Email / Username</label><input type="text" id="loginUser" placeholder="Email atau username terdaftar" required></div>
+                <div class="form-group"><label>Password</label><input type="password" id="loginPass" placeholder="Password Anda" required></div>
+                <button type="submit" class="submit-order-btn">Login</button>
+            </form>
+            <div class="switch-auth">
+                Belum punya akun? <a id="switchToRegister">Daftar dulu</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Login Admin -->
+    <div class="modal-overlay" id="adminLoginModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-lock"></i> Login Khusus Admin</h3>
+                <button class="close-modal" id="closeAdminLoginModal">&times;</button>
+            </div>
+            <form id="adminLoginForm">
+                <div class="form-group"><label>Username Admin</label><input type="text" id="adminUser" placeholder="Username (admin)" required></div>
+                <div class="form-group"><label>Password Admin</label><input type="password" id="adminPass" placeholder="Password (12345)" required></div>
+                <button type="submit" class="submit-order-btn" style="background: #26aa99;">Masuk Panel Admin</button>
+            </form>
+        </div>
+    </div>
+
     <!-- Modal Popup Isi Keranjang -->
     <div class="modal-overlay" id="cartModal">
-        <div class="modal-content">
+        <div class="modal-content" style="width: 600px;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-cart-shopping"></i> Keranjang Belanja Anda</h3>
                 <button class="close-modal" id="closeCartModal">&times;</button>
@@ -416,17 +475,17 @@
         </div>
     </div>
 
-    <!-- Modal Form Checkout (Pembeli) -->
+    <!-- Modal Form Checkout (Pelanggan) -->
     <div class="modal-overlay" id="checkoutModal">
-        <div class="modal-content">
+        <div class="modal-content" style="width: 600px;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-file-invoice-dollar"></i> Informasi Pengiriman & Pembayaran</h3>
                 <button class="close-modal" id="closeCheckoutModal">&times;</button>
             </div>
             <form id="checkoutForm">
-                <div class="form-group"><label>Nama Lengkap</label><input type="text" id="buyerName" placeholder="Masukkan nama lengkap" required></div>
-                <div class="form-group"><label>Nomor HP / WhatsApp</label><input type="tel" id="buyerPhone" placeholder="Contoh: 081234567890" required></div>
-                <div class="form-group"><label>Alamat Lengkap Pengiriman</label><textarea id="buyerAddress" rows="3" placeholder="Jalan, RT/RW, Kecamatan, Kota" required></textarea></div>
+                <div class="form-group"><label>Nama Penerima</label><input type="text" id="buyerName" required></div>
+                <div class="form-group"><label>Nomor HP / WhatsApp</label><input type="tel" id="buyerPhone" required></div>
+                <div class="form-group"><label>Alamat Lengkap Pengiriman</label><textarea id="buyerAddress" rows="3" required></textarea></div>
                 <div class="form-group">
                     <label>Metode Pembayaran</label>
                     <select id="paymentMethod" required>
@@ -444,15 +503,15 @@
         </div>
     </div>
 
-    <!-- Modal Lacak Pesanan Pembeli -->
+    <!-- Modal Lacak Pesanan Pelanggan -->
     <div class="modal-overlay" id="buyerTrackingModal">
         <div class="modal-content" style="width: 700px;">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-box-open"></i> Status & Lacakan Pesanan Pembeli</h3>
+                <h3><i class="fa-solid fa-box-open"></i> Riwayat & Status Pesanan Saya</h3>
                 <button class="close-modal" id="closeBuyerTrackingModal">&times;</button>
             </div>
             <div id="buyerOrderList">
-                <p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan aktif.</p>
+                <p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan.</p>
             </div>
         </div>
     </div>
@@ -462,7 +521,10 @@
         <div class="modal-content" style="width: 750px;">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-user-shield"></i> Panel Admin - Kelola Toko & Pesanan</h3>
-                <button class="close-modal" id="closeAdminModal">&times;</button>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <button id="logoutAdminBtn" style="background: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 2px; cursor: pointer; font-size: 12px; font-weight: bold;">Logout Admin</button>
+                    <button class="close-modal" id="closeAdminModal">&times;</button>
+                </div>
             </div>
             
             <div style="display: flex; gap: 10px; margin-bottom: 20px;">
@@ -504,7 +566,6 @@
 
     <!-- JavaScript Logika Aplikasi -->
     <script>
-        // Data Produk Default jika localStorage masih kosong
         const defaultProducts = [
             { id: 1, name: "E-Book & Modul Interaktif Pemrograman HTML5 & CSS3", price: 49000, desc: "Pelajari fondasi pembuatan website dari dasar hingga mahir." },
             { id: 2, name: "Paket Masterclass JavaScript & DOM Manipulation", price: 75000, desc: "Belajar interaktivitas web modern dengan studi kasus nyata." }
@@ -513,6 +574,8 @@
         let products = JSON.parse(localStorage.getItem('shopee_products')) || defaultProducts;
         let orders = JSON.parse(localStorage.getItem('shopee_orders')) || [];
         let cart = JSON.parse(localStorage.getItem('shopee_cart')) || [];
+        let users = JSON.parse(localStorage.getItem('shopee_users')) || [];
+        let loggedInUser = JSON.parse(localStorage.getItem('shopee_logged_in_user')) || null;
 
         // Elements
         const productGridContainer = document.getElementById('productGridContainer');
@@ -529,14 +592,26 @@
         const checkoutFinalPrice = document.getElementById('checkoutFinalPrice');
         const checkoutForm = document.getElementById('checkoutForm');
 
-        const openBuyerTrackingBtn = document.getElementById('openBuyerTrackingBtn');
-        const buyerTrackingModal = document.getElementById('buyerTrackingModal');
-        const closeBuyerTrackingModal = document.getElementById('closeBuyerTrackingModal');
-        const buyerOrderList = document.getElementById('buyerOrderList');
+        const topHeaderRight = document.getElementById('topHeaderRight');
+        const openUserAuthBtn = document.getElementById('openUserAuthBtn');
+        const registerModal = document.getElementById('registerModal');
+        const closeRegisterModal = document.getElementById('closeRegisterModal');
+        const registerForm = document.getElementById('registerForm');
+        
+        const userLoginModal = document.getElementById('userLoginModal');
+        const closeUserLoginModal = document.getElementById('closeUserLoginModal');
+        const userLoginForm = document.getElementById('userLoginForm');
+        const switchToLogin = document.getElementById('switchToLogin');
+        const switchToRegister = document.getElementById('switchToRegister');
 
-        const switchRoleBtn = document.getElementById('switchRoleBtn');
+        const openAdminLoginBtn = document.getElementById('openAdminLoginBtn');
+        const adminLoginModal = document.getElementById('adminLoginModal');
+        const closeAdminLoginModal = document.getElementById('closeAdminLoginModal');
+        const adminLoginForm = document.getElementById('adminLoginForm');
+
         const adminModal = document.getElementById('adminModal');
         const closeAdminModal = document.getElementById('closeAdminModal');
+        const logoutAdminBtn = document.getElementById('logoutAdminBtn');
         const adminProductList = document.getElementById('adminProductList');
         const adminOrderList = document.getElementById('adminOrderList');
         
@@ -551,7 +626,35 @@
         const productForm = document.getElementById('productForm');
         const productModalTitle = document.getElementById('productModalTitle');
 
-        // Render Katalog Produk di Halaman Utama
+        // Update Header Session UI Pelanggan
+        function updateAuthUI() {
+            if (loggedInUser) {
+                topHeaderRight.innerHTML = `
+                    <span>Halo, <strong>${loggedInUser.name}</strong></span>
+                    <span>|</span>
+                    <button id="openBuyerTrackingBtn" style="color:white; background:none; border:none; cursor:pointer;">Pesanan Saya</button>
+                    <span>|</span>
+                    <button id="logoutUserBtn" style="color:white; background:none; border:none; cursor:pointer; font-weight:bold;">Logout</button>
+                `;
+                document.getElementById('logoutUserBtn').addEventListener('click', () => {
+                    localStorage.removeItem('shopee_logged_in_user');
+                    loggedInUser = null;
+                    updateAuthUI();
+                    alert('Berhasil Logout.');
+                });
+                document.getElementById('openBuyerTrackingBtn').addEventListener('click', () => {
+                    document.getElementById('buyerTrackingModal').style.display = 'flex';
+                    renderBuyerOrders();
+                });
+            } else {
+                topHeaderRight.innerHTML = `<button id="openUserAuthBtn" style="color:white; background:none; border:none; cursor:pointer;">Daftar / Login Pelanggan</button>`;
+                document.getElementById('openUserAuthBtn').addEventListener('click', () => {
+                    userLoginModal.style.display = 'flex';
+                });
+            }
+        }
+
+        // Render Katalog Produk
         function renderProducts() {
             if (products.length === 0) {
                 productGridContainer.innerHTML = `<p style="grid-column: 1/-1; text-align:center; color:#888;">Belum ada produk tersedia.</p>`;
@@ -640,23 +743,31 @@
         cartIcon.addEventListener('click', () => { renderCartModal(); cartModal.style.display = 'flex'; });
         closeCartModal.addEventListener('click', () => cartModal.style.display = 'none');
 
+        // Validasi Checkout (Harus Login Pelanggan Terlebih Dahulu)
         openCheckoutForm.addEventListener('click', () => {
-            if (cart.length > 0) {
-                cartModal.style.display = 'none';
-                checkoutModal.style.display = 'flex';
-            } else {
+            if (cart.length === 0) {
                 alert('Keranjang belanja kosong!');
+                return;
             }
+            if (!loggedInUser) {
+                cartModal.style.display = 'none';
+                alert('Silakan registrasi atau login sebagai pelanggan terlebih dahulu untuk melanjutkan checkout.');
+                userLoginModal.style.display = 'flex';
+                return;
+            }
+            cartModal.style.display = 'none';
+            document.getElementById('buyerName').value = loggedInUser.name;
+            checkoutModal.style.display = 'flex';
         });
-
         closeCheckoutModal.addEventListener('click', () => checkoutModal.style.display = 'none');
 
-        // Checkout Process
+        // Proses Checkout
         checkoutForm.addEventListener('submit', function(e) {
             e.preventDefault();
             let totalAmount = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
             const newOrder = {
                 id: 'INV-' + Math.floor(100000 + Math.random() * 900000),
+                user: loggedInUser.username,
                 name: document.getElementById('buyerName').value,
                 phone: document.getElementById('buyerPhone').value,
                 address: document.getElementById('buyerAddress').value,
@@ -678,21 +789,17 @@
             checkoutForm.reset();
         });
 
-        // Lacak Pesanan Pembeli
-        openBuyerTrackingBtn.addEventListener('click', () => {
-            buyerTrackingModal.style.display = 'flex';
-            renderBuyerOrders();
-        });
-        closeBuyerTrackingModal.addEventListener('click', () => buyerTrackingModal.style.display = 'none');
-
+        // Lacak Pesanan Pelanggan (Sesuai Akun Login)
         function renderBuyerOrders() {
             let currentOrders = JSON.parse(localStorage.getItem('shopee_orders')) || [];
-            if (currentOrders.length === 0) {
-                buyerOrderList.innerHTML = `<p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan aktif.</p>`;
+            let myOrders = currentOrders.filter(o => o.user === loggedInUser.username);
+            
+            if (myOrders.length === 0) {
+                document.getElementById('buyerOrderList').innerHTML = `<p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan aktif.</p>`;
                 return;
             }
             let html = '';
-            currentOrders.forEach(order => {
+            myOrders.forEach(order => {
                 let itemsText = order.items.map(i => `${i.name} (x${i.qty})`).join(', ');
                 html += `
                     <div class="order-card">
@@ -707,18 +814,97 @@
                     </div>
                 `;
             });
-            buyerOrderList.innerHTML = html;
+            document.getElementById('buyerOrderList').innerHTML = html;
         }
 
-        // Panel Admin Modal
-        switchRoleBtn.addEventListener('click', () => {
-            adminModal.style.display = 'flex';
-            renderAdminProducts();
-            renderAdminOrders();
+        document.getElementById('closeBuyerTrackingModal').addEventListener('click', () => {
+            document.getElementById('buyerTrackingModal').style.display = 'none';
         });
-        closeAdminModal.addEventListener('click', () => adminModal.style.display = 'none');
 
-        // Tab Switching in Admin
+        // Navigasi Auth Pelanggan
+        openUserAuthBtn?.addEventListener('click', () => { userLoginModal.style.display = 'flex'; });
+        closeUserLoginModal.addEventListener('click', () => { userLoginModal.style.display = 'none'; });
+        closeRegisterModal.addEventListener('click', () => { registerModal.style.display = 'none'; });
+        
+        switchToRegister.addEventListener('click', () => {
+            userLoginModal.style.display = 'none';
+            registerModal.style.display = 'flex';
+        });
+        switchToLogin.addEventListener('click', () => {
+            registerModal.style.display = 'none';
+            userLoginModal.style.display = 'flex';
+        });
+
+        // Register Pelanggan Handler
+        registerForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let name = document.getElementById('regName').value;
+            let username = document.getElementById('regUser').value;
+            let pass = document.getElementById('regPass').value;
+
+            let existing = users.find(u => u.username === username);
+            if (existing) {
+                alert('Username/Email sudah terdaftar! Gunakan yang lain.');
+                return;
+            }
+
+            users.push({ name, username, pass });
+            localStorage.setItem('shopee_users', JSON.stringify(users));
+            alert('Registrasi berhasil! Silakan login.');
+            registerModal.style.display = 'none';
+            registerForm.reset();
+            userLoginModal.style.display = 'flex';
+        });
+
+        // Login Pelanggan Handler
+        userLoginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let username = document.getElementById('loginUser').value;
+            let pass = document.getElementById('loginPass').value;
+
+            let found = users.find(u => u.username === username && u.pass === pass);
+            if (found) {
+                loggedInUser = found;
+                localStorage.setItem('shopee_logged_in_user', JSON.stringify(loggedInUser));
+                alert(`Selamat datang kembali, ${found.name}!`);
+                userLoginModal.style.display = 'none';
+                userLoginForm.reset();
+                updateAuthUI();
+            } else {
+                alert('Username atau Password pelanggan salah, atau belum punya akun. Silakan registrasi terlebih dahulu.');
+            }
+        });
+
+        // Sistem Login Admin Terpisah
+        openAdminLoginBtn.addEventListener('click', () => {
+            adminLoginModal.style.display = 'flex';
+        });
+        closeAdminLoginModal.addEventListener('click', () => { adminLoginModal.style.display = 'none'; });
+
+        adminLoginForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            let u = document.getElementById('adminUser').value;
+            let p = document.getElementById('adminPass').value;
+
+            if (u === 'admin' && p === '12345') {
+                alert('Login Admin Berhasil!');
+                adminLoginModal.style.display = 'none';
+                adminLoginForm.reset();
+                adminModal.style.display = 'flex';
+                renderAdminProducts();
+                renderAdminOrders();
+            } else {
+                alert('Kredensial Admin Salah! (Gunakan admin / 12345)');
+            }
+        });
+
+        closeAdminModal.addEventListener('click', () => adminModal.style.display = 'none');
+        logoutAdminBtn.addEventListener('click', () => {
+            adminModal.style.display = 'none';
+            alert('Berhasil Logout dari Admin.');
+        });
+
+        // Tab Switching di Admin
         tabProductBtn.addEventListener('click', () => {
             tabProductBtn.style.background = '#ee4d2d';
             tabOrderBtn.style.background = '#ccc';
@@ -749,7 +935,6 @@
             let desc = document.getElementById('prodDesc').value;
 
             if (id) {
-                // Edit Produk
                 let prod = products.find(p => p.id == id);
                 if (prod) {
                     prod.name = name;
@@ -757,7 +942,6 @@
                     prod.desc = desc;
                 }
             } else {
-                // Tambah Produk Baru
                 let newProd = {
                     id: Date.now(),
                     name: name,
@@ -818,7 +1002,7 @@
             }
         };
 
-        // Render Pesanan di Admin
+        // Render Pesanan di Panel Admin
         function renderAdminOrders() {
             let currentOrders = JSON.parse(localStorage.getItem('shopee_orders')) || [];
             if (currentOrders.length === 0) {
@@ -831,7 +1015,7 @@
                 html += `
                     <div class="order-card">
                         <div class="order-header-row">
-                            <span>ID: ${order.id}</span>
+                            <span>ID: ${order.id} (Pelanggan: ${order.user})</span>
                             <div>
                                 <select class="status-select" onchange="updateOrderStatus(${index}, this.value)">
                                     <option value="Menunggu Konfirmasi" ${order.status === 'Menunggu Konfirmasi' ? 'selected' : ''}>Menunggu Konfirmasi</option>
@@ -841,7 +1025,7 @@
                                 </select>
                             </div>
                         </div>
-                        <p><strong>Pembeli:</strong> ${order.name} (${order.phone})</p>
+                        <p><strong>Penerima:</strong> ${order.name} (${order.phone})</p>
                         <p><strong>Alamat:</strong> ${order.address}</p>
                         <p><strong>Produk:</strong> ${itemsText}</p>
                         <p><strong>Total:</strong> ${order.total}</p>
@@ -859,15 +1043,18 @@
         };
 
         window.addEventListener('click', (event) => {
+            if (event.target === registerModal) registerModal.style.display = 'none';
+            if (event.target === userLoginModal) userLoginModal.style.display = 'none';
+            if (event.target === adminLoginModal) adminLoginModal.style.display = 'none';
             if (event.target === cartModal) cartModal.style.display = 'none';
             if (event.target === checkoutModal) checkoutModal.style.display = 'none';
-            if (event.target === buyerTrackingModal) buyerTrackingModal.style.display = 'none';
             if (event.target === adminModal) adminModal.style.display = 'none';
             if (event.target === productFormModal) productFormModal.style.display = 'none';
         });
 
-        // Inisialisasi awal saat halaman dimuat
+        // Inisialisasi awal
         renderProducts();
+        updateAuthUI();
     </script>
 </body>
 </html>
