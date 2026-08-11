@@ -59,7 +59,7 @@
         .search-container {
             display: flex;
             background: #fff;
-            flex: 0.6;
+            flex: 0.5;
             padding: 3px;
             border-radius: 2px;
             box-shadow: 0 0.125rem 0.25rem rgba(0,0,0,.09);
@@ -84,14 +84,29 @@
         }
         .nav-right-icons {
             display: flex;
-            gap: 20px;
+            gap: 15px;
             align-items: center;
         }
-        .cart-icon, .status-icon {
+        .nav-icon-btn {
             color: #fff;
-            font-size: 22px;
+            background: rgba(255,255,255,0.2);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .nav-icon-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
+        .cart-icon-wrapper {
             position: relative;
             cursor: pointer;
+            color: #fff;
+            font-size: 22px;
         }
         .cart-badge {
             position: absolute;
@@ -284,7 +299,7 @@
         }
         .modal-content {
             background: #fff;
-            width: 550px;
+            width: 600px;
             max-width: 90%;
             max-height: 90vh;
             overflow-y: auto;
@@ -304,7 +319,7 @@
             color: #ee4d2d;
             font-size: 18px;
         }
-        .close-modal, .close-checkout-modal, .close-status-modal {
+        .close-modal {
             background: none;
             border: none;
             font-size: 20px;
@@ -390,30 +405,30 @@
             background: #f04925;
         }
 
-        /* Status Pesanan Card */
+        /* Card Pesanan / Admin Table */
         .order-card {
             background: #fafafa;
-            border: 1px solid #eee;
-            padding: 12px;
+            border: 1px solid #ddd;
+            padding: 15px;
             border-radius: 4px;
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-size: 13px;
         }
         .order-header-row {
             display: flex;
             justify-content: space-between;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 6px;
-            margin-bottom: 8px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-bottom: 10px;
             font-weight: bold;
         }
-        .status-badge {
-            background: #fff3cd;
-            color: #856404;
-            padding: 2px 6px;
+        .status-select {
+            padding: 4px 8px;
+            border: 1px solid #ccc;
             border-radius: 2px;
-            font-size: 11px;
-            border: 1px solid #ffeeba;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -431,7 +446,7 @@
         <div class="header-right">
             <a href="#"><i class="fa-regular fa-bell"></i> Notifikasi</a>
             <a href="#"><i class="fa-regular fa-circle-question"></i> Bantuan</a>
-            <a href="#"><strong>Listiawati</strong></a>
+            <a href="#"><strong id="currentUserLabel">Mode: Pembeli</strong></a>
         </div>
     </div>
 
@@ -446,12 +461,10 @@
             <button class="search-btn" id="searchBtn"><i class="fa-solid fa-search"></i></button>
         </div>
         
-        <!-- Kumpulan Ikon Kanan (Keranjang & Status Pesanan) -->
+        <!-- Tombol Ganti Mode (Admin / Pembeli) & Keranjang -->
         <div class="nav-right-icons">
-            <div class="status-icon" id="statusIcon" title="Cek Status Pesanan">
-                <i class="fa-solid fa-clipboard-list" style="font-size: 22px;"></i>
-            </div>
-            <div class="cart-icon" id="cartIcon" title="Klik untuk lihat isi keranjang">
+            <button class="nav-icon-btn" id="switchRoleBtn"><i class="fa-solid fa-user-shield"></i> <span id="roleText">Buka Panel Admin</span></button>
+            <div class="cart-icon-wrapper" id="cartIcon" title="Lihat Keranjang">
                 <i class="fa-solid fa-cart-shopping"></i>
                 <span class="cart-badge" id="cartBadge">1</span>
             </div>
@@ -530,7 +543,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-cart-shopping"></i> Keranjang Belanja Anda</h3>
-                <button class="close-modal" id="closeModal">&times;</button>
+                <button class="close-modal" id="closeCartModal">&times;</button>
             </div>
             <div id="cartItemsList"></div>
             <div class="modal-footer">
@@ -540,12 +553,12 @@
         </div>
     </div>
 
-    <!-- Modal Form Input Data Diri & Pembayaran -->
+    <!-- Modal Form Input Data Diri & Pembayaran (Pembeli) -->
     <div class="modal-overlay" id="checkoutModal">
         <div class="modal-content">
             <div class="modal-header">
                 <h3><i class="fa-solid fa-file-invoice-dollar"></i> Informasi Pengiriman & Pembayaran</h3>
-                <button class="close-checkout-modal" id="closeCheckoutModal">&times;</button>
+                <button class="close-modal" id="closeCheckoutModal">&times;</button>
             </div>
             <form id="checkoutForm">
                 <div class="form-group">
@@ -577,20 +590,21 @@
         </div>
     </div>
 
-    <!-- Modal Status Pesanan -->
-    <div class="modal-overlay" id="statusModal">
-        <div class="modal-content">
+    <!-- Modal Panel Admin (Kelola Status Pesanan) -->
+    <div class="modal-overlay" id="adminModal">
+        <div class="modal-content" style="width: 700px;">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-clipboard-list"></i> Status Pesanan Saya</h3>
-                <button class="close-status-modal" id="closeStatusModal">&times;</button>
+                <h3><i class="fa-solid fa-user-shield"></i> Panel Admin - Kelola Pesanan Masuk</h3>
+                <button class="close-modal" id="closeAdminModal">&times;</button>
             </div>
-            <div id="orderHistoryList">
-                <p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan yang dibuat.</p>
+            <p style="font-size: 13px; color: #666; margin-bottom: 15px;">Admin dapat memantau data pembeli dan mengubah status pesanan (Contoh: Menjadi Sedang Dikemas, Dikirim, atau Selesai).</p>
+            <div id="adminOrderList">
+                <p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan yang masuk.</p>
             </div>
         </div>
     </div>
 
-    <!-- JavaScript Interaksi -->
+    <!-- JavaScript Logika Aplikasi -->
     <script>
         const btnAddCart = document.getElementById('btnAddCart');
         const btnBuyNow = document.getElementById('btnBuyNow');
@@ -599,26 +613,30 @@
         const cartBadge = document.getElementById('cartBadge');
         const cartIcon = document.getElementById('cartIcon');
         const cartModal = document.getElementById('cartModal');
-        const closeModal = document.getElementById('closeModal');
+        const closeCartModal = document.getElementById('closeCartModal');
         const cartItemsList = document.getElementById('cartItemsList');
         const cartTotalPrice = document.getElementById('cartTotalPrice');
         
-        // Elemen Form Checkout
+        // Checkout elements
         const openCheckoutForm = document.getElementById('openCheckoutForm');
         const checkoutModal = document.getElementById('checkoutModal');
         const closeCheckoutModal = document.getElementById('closeCheckoutModal');
         const checkoutFinalPrice = document.getElementById('checkoutFinalPrice');
         const checkoutForm = document.getElementById('checkoutForm');
 
-        // Elemen Status Pesanan
-        const statusIcon = document.getElementById('statusIcon');
-        const statusModal = document.getElementById('statusModal');
-        const closeStatusModal = document.getElementById('closeStatusModal');
-        const orderHistoryList = document.getElementById('orderHistoryList');
+        // Admin elements
+        const switchRoleBtn = document.getElementById('switchRoleBtn');
+        const roleText = document.getElementById('roleText');
+        const currentUserLabel = document.getElementById('currentUserLabel');
+        const adminModal = document.getElementById('adminModal');
+        const closeAdminModal = document.getElementById('closeAdminModal');
+        const adminOrderList = document.getElementById('adminOrderList');
 
         let cartQuantity = 1;
         const pricePerItem = 49000;
-        let orders = []; // Array untuk menyimpan riwayat pesanan
+
+        // Ambil data pesanan dari localStorage jika ada, agar tersimpan
+        let orders = JSON.parse(localStorage.getItem('shopee_orders')) || [];
 
         function increaseQty() {
             cartQuantity++;
@@ -655,17 +673,19 @@
 
         updateCartDisplay();
 
+        // Tombol Tambah ke Keranjang
         btnAddCart.addEventListener('click', function() {
             cartQuantity++;
             updateCartDisplay();
             alert('Berhasil memasukkan Modul HTML & CSS ke keranjang!');
         });
 
+        // Tampilkan Modal Keranjang
         cartIcon.addEventListener('click', function() {
             cartModal.style.display = 'flex';
         });
 
-        closeModal.addEventListener('click', function() {
+        closeCartModal.addEventListener('click', function() {
             cartModal.style.display = 'none';
         });
 
@@ -686,24 +706,24 @@
             checkoutModal.style.display = 'flex';
         });
 
-        // Buka Modal Status Pesanan via Ikon Clipboard di Navbar
-        statusIcon.addEventListener('click', function() {
-            statusModal.style.display = 'flex';
-            renderOrderHistory();
+        // Tombol Ganti Mode (Admin / Pembeli)
+        switchRoleBtn.addEventListener('click', function() {
+            adminModal.style.display = 'flex';
+            renderAdminOrders();
         });
 
-        closeStatusModal.addEventListener('click', function() {
-            statusModal.style.display = 'none';
+        closeAdminModal.addEventListener('click', function() {
+            adminModal.style.display = 'none';
         });
 
         // Menutup modal jika klik di luar kotak
         window.addEventListener('click', function(event) {
             if (event.target === cartModal) cartModal.style.display = 'none';
             if (event.target === checkoutModal) checkoutModal.style.display = 'none';
-            if (event.target === statusModal) statusModal.style.display = 'none';
+            if (event.target === adminModal) adminModal.style.display = 'none';
         });
 
-        // Aksi ketika form checkout disubmit
+        // Submit Form Checkout oleh Pembeli
         checkoutForm.addEventListener('submit', function(e) {
             e.preventDefault();
             const name = document.getElementById('buyerName').value;
@@ -712,7 +732,6 @@
             const payment = document.getElementById('paymentMethod').value;
             const total = checkoutFinalPrice.textContent;
             
-            // Buat objek data pesanan baru
             const newOrder = {
                 id: 'INV-' + Math.floor(100000 + Math.random() * 900000),
                 name: name,
@@ -721,44 +740,58 @@
                 payment: payment,
                 total: total,
                 qty: cartQuantity,
-                status: 'Sedang Dikemas (Menunggu Konfirmasi Penjual)'
+                status: 'Menunggu Konfirmasi'
             };
 
-            // Masukkan ke dalam array riwayat pesanan
             orders.unshift(newOrder);
+            localStorage.setItem('shopee_orders', JSON.stringify(orders));
 
-            alert(`Pesanan Berhasil Dibuat!\nNo. Pesanan: ${newOrder.id}\nStatus: ${newOrder.status}`);
+            alert(`Checkout Berhasil!\nNo. Pesanan: ${newOrder.id}\nSilakan cek Panel Admin untuk memproses data pesanan ini.`);
             
-            // Reset keranjang & tutup form
             cartQuantity = 0;
             updateCartDisplay();
             checkoutModal.style.display = 'none';
             checkoutForm.reset();
         });
 
-        // Fungsi menampilkan daftar pesanan di modal status
-        function renderOrderHistory() {
+        // Render Data untuk Panel Admin (Admin bisa mengubah status)
+        function renderAdminOrders() {
             if (orders.length === 0) {
-                orderHistoryList.innerHTML = `<p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan yang dibuat.</p>`;
+                adminOrderList.innerHTML = `<p style="text-align: center; color: #888; padding: 20px;">Belum ada pesanan yang masuk dari pembeli.</p>`;
                 return;
             }
 
             let html = '';
-            orders.forEach(order => {
+            orders.forEach((order, index) => {
                 html += `
                     <div class="order-card">
                         <div class="order-header-row">
-                            <span>No: ${order.id}</span>
-                            <span class="status-badge">${order.status}</span>
+                            <span>ID: ${order.id}</span>
+                            <div>
+                                <label style="font-weight:normal; font-size:12px;">Status:</label>
+                                <select class="status-select" onchange="updateOrderStatus(${index}, this.value)">
+                                    <option value="Menunggu Konfirmasi" ${order.status === 'Menunggu Konfirmasi' ? 'selected' : ''}>Menunggu Konfirmasi</option>
+                                    <option value="Sedang Dikemas" ${order.status === 'Sedang Dikemas' ? 'selected' : ''}>Sedang Dikemas</option>
+                                    <option value="Sedang Dikirim" ${order.status === 'Sedang Dikirim' ? 'selected' : ''}>Sedang Dikirim</option>
+                                    <option value="Selesai" ${order.status === 'Selesai' ? 'selected' : ''}>Selesai</option>
+                                </select>
+                            </div>
                         </div>
-                        <p><strong>Nama:</strong> ${order.name} (${order.phone})</p>
+                        <p><strong>Nama Pembeli:</strong> ${order.name} (${order.phone})</p>
                         <p><strong>Alamat:</strong> ${order.address}</p>
-                        <p><strong>Metode Bayar:</strong> ${order.payment}</p>
-                        <p><strong>Jumlah:</strong> ${order.qty} Item (${order.total})</p>
+                        <p><strong>Metode Pembayaran:</strong> ${order.payment}</p>
+                        <p><strong>Rincian Produk:</strong> Modul HTML & CSS (x${order.qty}) - <strong>${order.total}</strong></p>
                     </div>
                 `;
             });
-            orderHistoryList.innerHTML = html;
+            adminOrderList.innerHTML = html;
+        }
+
+        // Fungsi yang dipanggil saat admin mengubah status pesanan melalui dropdown
+        window.updateOrderStatus = function(index, newStatus) {
+            orders[index].status = newStatus;
+            localStorage.setItem('shopee_orders', JSON.stringify(orders));
+            alert('Status pesanan ' + orders[index].id + ' berhasil diubah menjadi: ' + newStatus);
         }
 
         searchBtn.addEventListener('click', function() {
